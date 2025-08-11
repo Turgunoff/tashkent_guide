@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/category.dart';
+import '../../../../core/services/log_service.dart';
 
 class CategoryCard extends StatelessWidget {
   final Category category;
@@ -35,7 +36,29 @@ class CategoryCard extends StatelessWidget {
                       width: 64,
                       height: 64,
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          LogService.info('CategoryCard', 'Category icon loaded successfully', data: {
+                            'categoryId': category.id,
+                            'categoryName': category.name,
+                            'iconUrl': category.iconUrl,
+                          });
+                          return child;
+                        }
+                                                                          return const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+                          ),
+                        );
+                      },
                       errorBuilder: (context, error, stackTrace) {
+                        LogService.warn('CategoryCard', 'Failed to load category icon', data: {
+                          'categoryId': category.id,
+                          'categoryName': category.name,
+                          'iconUrl': category.iconUrl,
+                          'error': error.toString(),
+                        });
                         return _buildDefaultIcon(context);
                       },
                     ),

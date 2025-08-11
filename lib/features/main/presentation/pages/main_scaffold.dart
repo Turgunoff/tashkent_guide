@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../core/services/log_service.dart';
 
 import '../../../home/presentation/pages/home_page.dart';
 import '../../../places/presentation/pages/places_page.dart';
@@ -25,6 +26,7 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    LogService.info('MainScaffold', 'Building main scaffold');
     return Scaffold(
       backgroundColor: Colors.white,
       body: _pages[_currentIndex],
@@ -40,6 +42,10 @@ class _MainScaffoldState extends State<MainScaffold> {
           surfaceTintColor: Colors.white,
           selectedIndex: _currentIndex,
           onDestinationSelected: (int newIndex) {
+            LogService.info('MainScaffold', 'Navigation tab changed', data: {
+              'fromIndex': _currentIndex,
+              'toIndex': newIndex,
+            });
             setState(() => _currentIndex = newIndex);
           },
           destinations: const <NavigationDestination>[

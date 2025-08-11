@@ -14,27 +14,40 @@ class PlaceModel extends Place {
     required super.createdAt,
   });
 
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
   factory PlaceModel.fromJson(Map<String, dynamic> json) {
+    final List<dynamic>? images = json['images'] as List<dynamic>?;
+    final String? firstImage =
+        (images != null && images.isNotEmpty) ? images.first as String : null;
+
     return PlaceModel(
       id: json['id'] as String,
       name: json['name'] as String,
-      description: json['description'] as String?,
-      imageUrl: json['image_url'] as String?,
+      description: json['details'] as String?,
+      imageUrl: firstImage,
       address: json['address'] as String?,
       latitude: json['latitude'] as double?,
       longitude: json['longitude'] as double?,
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      rating: _parseDouble(json['rating']),
       categoryId: json['category_id'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
-      'description': description,
-      'image_url': imageUrl,
+      'details': description,
+      // Keep only the primary image in this mapping
+      'images': imageUrl != null ? [imageUrl] : [],
       'address': address,
       'latitude': latitude,
       'longitude': longitude,

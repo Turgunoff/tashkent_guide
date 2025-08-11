@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../domain/entities/place.dart';
 import '../../../../core/services/log_service.dart';
@@ -27,8 +28,10 @@ class PlaceCard extends StatelessWidget {
     const double radius = 24.0;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE6E8EB)),
+        color: Theme.of(context).colorScheme.surface,
+        border: Border.all(
+          color: Theme.of(context).dividerColor.withOpacity(0.5),
+        ),
         borderRadius: BorderRadius.circular(radius),
       ),
       child: ClipRRect(
@@ -42,46 +45,55 @@ class PlaceCard extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: place.imageUrl != null
-                    ? Image.network(
-                        place.imageUrl!,
+                    ? CachedNetworkImage(
+                        imageUrl: place.imageUrl!,
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            LogService.info('PlaceCard', 'Place image loaded successfully', data: {
-                              'placeId': place.id,
-                              'placeName': place.name,
-                              'imageUrl': place.imageUrl,
-                            });
-                            return child;
-                          }
+                        placeholder: (context, url) {
+                          LogService.info('PlaceCard', 'Loading place image',
+                              data: {
+                                'placeId': place.id,
+                                'placeName': place.name,
+                                'imageUrl': place.imageUrl,
+                              });
                           return Container(
                             width: double.infinity,
                             height: double.infinity,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [Color(0xFFF0F1EF), Color(0xFFF7F7F6)],
+                                colors: [
+                                  Theme.of(context).colorScheme.surface,
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .surface
+                                      .withOpacity(0.8),
+                                ],
                               ),
                             ),
-                            child: const Center(
+                            child: Center(
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).colorScheme.primary),
                               ),
                             ),
                           );
                         },
-                        errorBuilder: (context, error, stackTrace) {
-                          LogService.warn('PlaceCard', 'Failed to load place image', data: {
-                            'placeId': place.id,
-                            'placeName': place.name,
-                            'imageUrl': place.imageUrl,
-                            'error': error.toString(),
-                          });
+                        errorWidget: (context, url, error) {
+                          LogService.warn(
+                              'PlaceCard', 'Failed to load place image',
+                              data: {
+                                'placeId': place.id,
+                                'placeName': place.name,
+                                'imageUrl': place.imageUrl,
+                                'error': error.toString(),
+                              });
                           return _buildPlaceholder();
                         },
+                        memCacheWidth: 400, // Optimize memory usage for cards
+                        memCacheHeight: 300,
                       )
                     : _buildPlaceholder(),
               ),
@@ -96,10 +108,10 @@ class PlaceCard extends StatelessWidget {
                     children: [
                       Text(
                         place.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF212121),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -109,18 +121,24 @@ class PlaceCard extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Iconsax.location,
                               size: 14,
-                              color: Color(0xFF748089),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.6),
                             ),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
                                 place.address!,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
-                                  color: Color(0xFF748089),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.6),
                                   fontWeight: FontWeight.w500,
                                 ),
                                 maxLines: 1,
@@ -139,10 +157,10 @@ class PlaceCard extends StatelessWidget {
                           const SizedBox(width: 6),
                           Text(
                             place.rating.toStringAsFixed(1),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF212121),
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],

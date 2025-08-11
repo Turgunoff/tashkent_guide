@@ -3,6 +3,7 @@ class Place {
   final String name;
   final String? description;
   final String? imageUrl;
+  final List<String> images;
   final String? address;
   final double? latitude;
   final double? longitude;
@@ -15,6 +16,7 @@ class Place {
     required this.name,
     this.description,
     this.imageUrl,
+    this.images = const [],
     this.address,
     this.latitude,
     this.longitude,
@@ -44,6 +46,7 @@ class Place {
       'name': name,
       'description': description,
       'imageUrl': imageUrl,
+      'images': images,
       'address': address,
       'latitude': latitude,
       'longitude': longitude,
@@ -55,11 +58,17 @@ class Place {
 
   /// Create Place from JSON
   factory Place.fromJson(Map<String, dynamic> json) {
+    final List<String> imagesList = [];
+    if (json['images'] != null) {
+      imagesList.addAll((json['images'] as List).cast<String>());
+    }
+
     return Place(
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
       imageUrl: json['imageUrl'] as String?,
+      images: imagesList,
       address: json['address'] as String?,
       latitude: json['latitude'] as double?,
       longitude: json['longitude'] as double?,

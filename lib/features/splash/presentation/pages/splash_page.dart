@@ -26,19 +26,18 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     final Color primary = Theme.of(context).colorScheme.primary;
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Icon(Icons.location_city_rounded, size: 88, color: primary),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Toshkent Guide',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],

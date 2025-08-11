@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../domain/entities/category.dart';
 import '../../../../core/services/log_service.dart';
@@ -26,41 +27,45 @@ class CategoryCard extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: const Color(0xFFE3F2FD),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: category.iconUrl != null
                 ? ClipOval(
-                    child: Image.network(
-                      category.iconUrl!,
+                    child: CachedNetworkImage(
+                      imageUrl: category.iconUrl!,
                       width: 64,
                       height: 64,
                       fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          LogService.info('CategoryCard', 'Category icon loaded successfully', data: {
-                            'categoryId': category.id,
-                            'categoryName': category.name,
-                            'iconUrl': category.iconUrl,
-                          });
-                          return child;
-                        }
-                                                                          return const Center(
+                      placeholder: (context, url) {
+                        LogService.info('CategoryCard', 'Loading category icon',
+                            data: {
+                              'categoryId': category.id,
+                              'categoryName': category.name,
+                              'iconUrl': category.iconUrl,
+                            });
+                        return Center(
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).colorScheme.primary),
                           ),
                         );
                       },
-                      errorBuilder: (context, error, stackTrace) {
-                        LogService.warn('CategoryCard', 'Failed to load category icon', data: {
-                          'categoryId': category.id,
-                          'categoryName': category.name,
-                          'iconUrl': category.iconUrl,
-                          'error': error.toString(),
-                        });
+                      errorWidget: (context, url, error) {
+                        LogService.warn(
+                            'CategoryCard', 'Failed to load category icon',
+                            data: {
+                              'categoryId': category.id,
+                              'categoryName': category.name,
+                              'iconUrl': category.iconUrl,
+                              'error': error.toString(),
+                            });
                         return _buildDefaultIcon(context);
                       },
+                      memCacheWidth:
+                          128, // Optimize memory usage for small icons
+                      memCacheHeight: 128,
                     ),
                   )
                 : _buildDefaultIcon(context),
@@ -69,10 +74,10 @@ class CategoryCard extends StatelessWidget {
           // Kategoriya nomi
           Text(
             category.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF1565C0),
+              color: Theme.of(context).colorScheme.primary,
             ),
             textAlign: TextAlign.center,
             maxLines: 2,
@@ -105,7 +110,7 @@ class CategoryCard extends StatelessWidget {
     return Icon(
       iconData,
       size: 28,
-      color: const Color(0xFF1565C0),
+      color: Theme.of(context).colorScheme.primary,
     );
   }
 }

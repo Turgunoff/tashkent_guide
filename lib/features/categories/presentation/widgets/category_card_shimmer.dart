@@ -6,9 +6,10 @@ class CategoryCardShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Shimmer.fromColors(
-      baseColor: const Color(0xFFE0E0E0),
-      highlightColor: const Color(0xFFF5F5F5),
+      baseColor: isDark ? Colors.grey[800]! : const Color(0xFFE0E0E0),
+      highlightColor: isDark ? Colors.grey[700]! : const Color(0xFFF5F5F5),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -16,8 +17,8 @@ class CategoryCardShimmer extends StatelessWidget {
           Container(
             width: 64,
             height: 64,
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
               shape: BoxShape.circle,
             ),
           ),
@@ -27,7 +28,7 @@ class CategoryCardShimmer extends StatelessWidget {
             width: 60,
             height: 12,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(6),
             ),
           ),

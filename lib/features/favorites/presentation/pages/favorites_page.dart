@@ -35,7 +35,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           'FavoritesPage', 'Failed to initialize favorites service',
           error: e);
       setState(() {
-        _error = 'Favorites service initialization failed';
+        _error = 'Sevimlilar xizmati ishga tushirishda xatolik';
         _isLoading = false;
       });
     }
@@ -61,7 +61,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     } catch (e) {
       LogService.error('FavoritesPage', 'Failed to load favorites', error: e);
       setState(() {
-        _error = 'Failed to load favorites';
+        _error = 'Sevimlilarni yuklashda xatolik';
         _isLoading = false;
       });
     }
@@ -77,9 +77,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${place.name} removed from favorites'),
+            content: Text('${place.name} sevimlilardan olib tashlandi'),
             action: SnackBarAction(
-              label: 'Undo',
+              label: 'Bekor qilish',
               onPressed: () async {
                 await _favoritesService.addToFavorites(place);
                 setState(() {
@@ -100,7 +100,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           error: e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Failed to remove from favorites'),
+          content: Text('Sevimlilardan olib tashlashda xatolik'),
           backgroundColor: Colors.red,
         ),
       );
@@ -112,21 +112,21 @@ class _FavoritesPageState extends State<FavoritesPage> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Clear All Favorites'),
+          title: const Text('Barcha sevimlilarni tozalash'),
           content: const Text(
-            'Are you sure you want to remove all places from favorites? This action cannot be undone.',
+            'Barcha joylarni sevimlilardan olib tashlashni xohlaysizmi? Bu amalni bekor qilib bo\'lmaydi.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: const Text('Bekor qilish'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
               ),
-              child: const Text('Clear All'),
+              child: const Text('Barchasini tozalash'),
             ),
           ],
         ),
@@ -141,7 +141,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('All favorites cleared'),
+              content: Text('Barcha sevimlilar tozalandi'),
             ),
           );
 
@@ -153,7 +153,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           error: e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Failed to clear favorites'),
+          content: Text('Sevimlilarni tozalashda xatolik'),
           backgroundColor: Colors.red,
         ),
       );
@@ -163,26 +163,23 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         title: const Text(
-          'Favorites',
+          'Sevimlilar',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF212121),
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
         actions: [
           if (_favoritePlaces.isNotEmpty)
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Iconsax.trash,
-                color: Color(0xFFE74C3C),
+                color: Theme.of(context).colorScheme.error,
               ),
               onPressed: _clearAllFavorites,
-              tooltip: 'Clear all favorites',
+              tooltip: 'Barcha sevimlilarni tozalash',
             ),
         ],
       ),
@@ -200,19 +197,21 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   Widget _buildLoadingState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Theme.of(context).colorScheme.primary,
+            ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'Loading favorites...',
+            'Sevimlilar yuklanmoqda...',
             style: TextStyle(
               fontSize: 16,
-              color: Color(0xFF748089),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
             ),
           ),
         ],
@@ -230,27 +229,30 @@ class _FavoritesPageState extends State<FavoritesPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.error.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.error_outline,
                 size: 48,
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.error,
               ),
             ),
             const SizedBox(height: 16),
             Text(
-              'Error loading favorites',
+              'Sevimlilar yuklanmadi',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: const Color(0xFF212121),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
             ),
             const SizedBox(height: 8),
             Text(
               _error!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF748089),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.7),
                   ),
               textAlign: TextAlign.center,
             ),
@@ -258,10 +260,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ElevatedButton.icon(
               onPressed: _loadFavorites,
               icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
+              label: const Text('Qayta urinish'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1565C0),
-                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -285,28 +287,31 @@ class _FavoritesPageState extends State<FavoritesPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: const Color(0xFF1565C0).withOpacity(0.1),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: const Icon(
+              child: Icon(
                 Iconsax.heart,
                 size: 48,
-                color: Color(0xFF1565C0),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             const SizedBox(height: 16),
             Text(
-              'No favorites yet',
+              'Sevimlilar yo\'q',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: const Color(0xFF212121),
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Start exploring places and add them to your favorites to see them here!',
+              'Joylarni kashf qiling va sevimlilaringizga qo\'shing!',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF748089),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.7),
                   ),
               textAlign: TextAlign.center,
             ),
@@ -316,10 +321,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 Navigator.of(context).pushReplacementNamed(AppRoutes.main);
               },
               icon: const Icon(Iconsax.discover),
-              label: const Text('Explore Places'),
+              label: const Text('Joylarni kashf qilish'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1565C0),
-                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -342,11 +347,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Theme.of(context).shadowColor.withOpacity(0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 2),
                 ),
@@ -357,12 +362,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1565C0).withOpacity(0.1),
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Iconsax.heart5,
-                    color: Color(0xFF1565C0),
+                    color: Theme.of(context).colorScheme.primary,
                     size: 24,
                   ),
                 ),
@@ -372,17 +378,20 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Your Favorites',
+                        'Sizning sevimlilaringiz',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xFF212121),
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${_favoritePlaces.length} place${_favoritePlaces.length == 1 ? '' : 's'} saved',
+                        '${_favoritePlaces.length} ta joy saqlangan',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: const Color(0xFF748089),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7),
                             ),
                       ),
                     ],
@@ -422,21 +431,26 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       right: 8,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surface
+                              .withOpacity(0.9),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Theme.of(context)
+                                  .shadowColor
+                                  .withOpacity(0.2),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
                           ],
                         ),
                         child: IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.close,
                             size: 18,
-                            color: Color(0xFFE74C3C),
+                            color: Theme.of(context).colorScheme.error,
                           ),
                           onPressed: () => _removeFromFavorites(place),
                           padding: const EdgeInsets.all(8),

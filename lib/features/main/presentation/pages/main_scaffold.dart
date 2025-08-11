@@ -28,18 +28,18 @@ class _MainScaffoldState extends State<MainScaffold> {
   Widget build(BuildContext context) {
     LogService.info('MainScaffold', 'Building main scaffold');
     return Scaffold(
-      backgroundColor: Colors.white,
       body: _pages[_currentIndex],
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
           border: Border(
-            top: BorderSide(color: Color(0xFFE5E5E5), width: 0.5),
+            top: BorderSide(
+              color: Theme.of(context).dividerColor.withOpacity(0.5),
+              width: 0.5,
+            ),
           ),
         ),
         child: NavigationBar(
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.white,
           selectedIndex: _currentIndex,
           onDestinationSelected: (int newIndex) {
             LogService.info('MainScaffold', 'Navigation tab changed', data: {

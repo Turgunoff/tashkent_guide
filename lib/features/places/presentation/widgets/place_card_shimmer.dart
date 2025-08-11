@@ -7,14 +7,17 @@ class PlaceCardShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double radius = 24.0;
-    
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Shimmer.fromColors(
-      baseColor: const Color(0xFFE0E0E0),
-      highlightColor: const Color(0xFFF5F5F5),
+      baseColor: isDark ? Colors.grey[800]! : const Color(0xFFE0E0E0),
+      highlightColor: isDark ? Colors.grey[700]! : const Color(0xFFF5F5F5),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFE6E8EB)),
+          color: Theme.of(context).colorScheme.surface,
+          border: Border.all(
+            color: Theme.of(context).dividerColor.withOpacity(0.5),
+          ),
           borderRadius: BorderRadius.circular(radius),
         ),
         child: Column(
@@ -25,16 +28,16 @@ class PlaceCardShimmer extends StatelessWidget {
               flex: 2,
               child: Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(radius),
                     topRight: Radius.circular(radius),
                   ),
                 ),
               ),
             ),
-            
+
             // Info shimmer
             Expanded(
               flex: 2,
@@ -48,20 +51,20 @@ class PlaceCardShimmer extends StatelessWidget {
                       width: double.infinity,
                       height: 16,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     const Spacer(),
-                    
+
                     // Manzil shimmer
                     Row(
                       children: [
                         Container(
                           width: 14,
                           height: 14,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -70,24 +73,24 @@ class PlaceCardShimmer extends StatelessWidget {
                           child: Container(
                             height: 12,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.surface,
                               borderRadius: BorderRadius.circular(6),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 8),
-                    
+
                     // Rating shimmer
                     Row(
                       children: [
                         Container(
                           width: 14,
                           height: 14,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -96,7 +99,7 @@ class PlaceCardShimmer extends StatelessWidget {
                           width: 30,
                           height: 12,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
